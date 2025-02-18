@@ -44,9 +44,6 @@
           ~~~
           $ COMMIT; # transaction2 쿼리실행 종료 및 반영(transaction2의 값으로 덮어 씌워지는 ★Lost Update 이슈 발생★, 너무 오랜시간 COMMIT을 하지 못하는 경우에는 LOCK TimeOut 시간이 초과되어 발생하지 않음)
           ~~~
-      - Lost Update 이슈와 해결 방법
-        - 위에서 살펴본 바와 같이 transaction2의 마지막 COMMIT 단계에서 transaction1에서 처리되었던 수정부분이 덮어씌워지는 이슈가 발생할 수 있음
-        - 따라서 낙관적 락과 함께 사용하여 이를 해소시키는 방향으로 설계되어야 함
 
   - [ Redis를 활용한 방법 ]
     - `Redis 분산락` ( Distributed Lock ) : 멀티 인스턴스 환경에서 동시성을 제어하는 방법으로 보통 SETNX (SET if Not Exists) 명령어를 이용하여 특정 리소스(데이터)를 다른 프로세스가 접근하지 못하게 만듦
