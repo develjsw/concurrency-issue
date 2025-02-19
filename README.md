@@ -38,7 +38,10 @@
           ~~~
           $ UPDATE test.goods SET goods_price = 1111, VERSION = VERSION + 1 WHERE goods_id = 2 AND VERSION = 1; # transaction2의 위에서 가져온 version 조건을 포함하여 업데이트 (transaction2에서 가져왔던 version과 현재 update에서 조건으로 걸어둔 version의 차이로 인해 업데이트 된 행이 없음 = 0 rows affected)
           $ ROLLBACK; # 변경된 사항이 없으므로 RollBack 진행
-          ~~~ 
+          ~~~
+      - Lost Update 이슈와 해결 방법
+        - 위에서 살펴본 바와 같이 transaction2의 마지막 UPDATE 단계에서 수정 요청사항을 잃어버리게 됨
+        - 따라서 낙관적 락에서는 RollBack을 진행한 후 클라이언트에 알리거나, 재시도 로직을 별도로 구현해야 함
     - `비관적 락` ( Pessimistic Lock ) : 데이터 충돌이 자주 발생할 것으로 예상될 때 사용하는 방식으로, 한 트랜잭션이 데이터를 수정하는 동안 다른 트랜잭션이 해당 데이터를 접근하지 못하도록 차단(locking)함
       - 동작 방식
         - 데이터를 조회할 때 잠금(Lock)을 설정하여 다른 트랜잭션이 해당 데이터를 변경할 수 없도록 함
@@ -78,6 +81,7 @@
       - Lost Update 이슈와 해결 방법
         - 위에서 살펴본 바와 같이 transaction2의 마지막 COMMIT 단계에서 transaction1에서 처리되었던 수정부분이 덮어씌워지는 이슈가 발생할 수 있음
         - 따라서 낙관적 락과 함께 사용하여 이를 해소시키는 방향으로 설계되어야 함
+
 
   - [ Redis를 활용한 방법 ]
     - `Redis 분산락` ( Distributed Lock ) : 멀티 인스턴스 환경에서 동시성을 제어하는 방법으로 보통 SETNX (SET if Not Exists) 명령어를 이용하여 특정 리소스(데이터)를 다른 프로세스가 접근하지 못하게 만듦
