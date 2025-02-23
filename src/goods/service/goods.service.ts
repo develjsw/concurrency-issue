@@ -38,9 +38,9 @@ export class GoodsService {
                 일정시간 이후 만료되어 자동 Lock이 해제되긴 하지만,
                 작업이 완료되었으므로(성공/실패) Lock을 명시적으로 해제시켜 줌
             */
-        } /* finally {
+        } finally {
             console.log('Lock이 해제되었습니다.');
             await lock.release();
-        }*/
+        }
     }
 }
